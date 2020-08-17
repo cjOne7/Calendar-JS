@@ -31,8 +31,9 @@ async function createEvent() {
     try {
         let events = await graphClient
             .api('/me/events')
+            .version('beta')
             .post();
-        updatePage(msalClient.getAccount(), Views.createEvent, events);
+        updatePage(msalClient.getAccount(), Views.home);
     } catch (error) {
         updatePage(msalClient.getAccount(), Views.error, {
             message: 'Error getting events',

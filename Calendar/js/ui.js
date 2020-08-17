@@ -21,6 +21,9 @@ function showAuthenticatedNav(account, view) {
     authenticatedNav.innerHTML = '';
 
     if (account) {
+        // for (const view of views) {
+
+        // }
         // Add Calendar link
         let calendarNav = createElement('div', 'nav-item');
 
@@ -32,6 +35,10 @@ function showAuthenticatedNav(account, view) {
 
         authenticatedNav.appendChild(calendarNav);
     }
+}
+
+function createAuthenticatedNav (view) {
+
 }
 
 function showAccountNav(account) {
@@ -162,6 +169,8 @@ function showCalendar(events) {
 
 function showCreateEventFields() {
     let div = document.createElement('div');
+
+    div.appendChild(createElement('h1', null, 'Create event'));
 
     mainContainer.innerHTML = '';
     mainContainer.appendChild(div);
