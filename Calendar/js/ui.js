@@ -167,17 +167,17 @@ function showCalendar(events) {
 function showCreateEventFields() {
     const mainDiv = createElement('div', 'container');
     mainDiv.appendChild(createElement('h1', null, 'Create event'));
-    
+
     const div = createElement('div', "form-container");
     $(mainDiv).append(div);
 
-    $(div).append(createLabel("subject", "Subject:")).append(createInputField("subject", "text", "subject", "required", "Subject...")).append("<br>");
+    $(div).append(createLabel("subject", "Subject*:")).append(createInputField("subject", "text", "subject", "required", "Subject...")).append("<br>");
 
-    $(div).append(createLabel("content", "Content:")).append(createInputField("content", "text", "content", "required", "Content...")).append("<br>");
+    $(div).append(createLabel("content", "Content*:")).append(createInputField("content", "text", "content", "required", "Content...")).append("<br>");
 
-    $(div).append(createLabel(null, "Start date:")).append(createInputField("startdate", "datetime-local", null, "required")).append("<br>");
+    $(div).append(createLabel(null, "Start date*:")).append(createInputField("startdate", "datetime-local", null, "required")).append("<br>");
 
-    $(div).append(createLabel(null, "End date:")).append(createInputField("enddate", "datetime-local", null, "required")).append("<br>");
+    $(div).append(createLabel(null, "End date*:")).append(createInputField("enddate", "datetime-local", null, "required")).append("<br>");
 
     const submitBtn = $('<button/>', {
         "text": "Submit",
@@ -185,18 +185,21 @@ function showCreateEventFields() {
         "class": "btn btn-outline-primary",
         click: function () {
             const subject = document.getElementById("subject").value;
-            if (!subject) {
-                alert("Subject must be filled");
-                return;
-            }
             const content = document.getElementById("content").value;
-            if (!content) {
-                alert("Content must be filled");
+            if (!subject || !content) {
+                alert("Mandatory fields (with asterisk '*') must be filled");
                 return;
             }
             const startDate = document.getElementById("startdate").value + ":00Z";
+            //In the Outlook calendar, the hours themselves increase by 2, so we need to subtract this extra time.
+
+            const fixedStartDate = new Date(startDate).minusHours(getTimeZoneCode());
+
             const endDate = document.getElementById("enddate").value + ":00Z";
-            createEvent(subject, content, startDate, endDate);
+            //The same operation with end time
+            const fixedEndDate = new Date(endDate).minusHours(getTimeZoneCode());
+
+            createEvent(subject, content, fixedStartDate, fixedEndDate);
         }
     });
     $(div).append(submitBtn).append("<br>");
@@ -205,8 +208,14 @@ function showCreateEventFields() {
     mainContainer.appendChild(mainDiv);
 }
 
-function checkFormData() {
+function getTimeZoneCode() {
+    const date = new Date();
+    return Math.abs(date.getTimezoneOffset() / 60);
+}
 
+Date.prototype.minusHours = function (h) {
+    this.setHours(this.getHours() - h);
+    return this;
 }
 
 function createInputField(id, type, name, required, placeholder) {
