@@ -35,11 +35,11 @@ async function createEvent(subject, content, startTime, endTime) {
             content: content
         },
         start: {
-            dateTime: "2020-08-15T12:00:00Z",
+            dateTime: startTime,
             timeZone: "Pacific Standard Time"
         },
         end: {
-            dateTime: "2020-08-25T14:00:00Z",
+            dateTime: endTime,
             timeZone: "Pacific Standard Time"
         }
     };

@@ -165,95 +165,65 @@ function showCalendar(events) {
 }
 
 function showCreateEventFields() {
-    let div = createElement('div', 'form-container');
-    div.appendChild(createElement('h1', null, 'Create event'));
-    // $(function() {
-    //     $(div).append("<iframe src='form_block/form.html'></iframe>");
-    // });
+    const mainDiv = createElement('div', 'container');
+    mainDiv.appendChild(createElement('h1', null, 'Create event'));
+    
+    const div = createElement('div', "form-container");
+    $(mainDiv).append(div);
 
-    //Not WORK!
-    // $(function() {
-    //     $(div).load("form_block/form.html");
-    // });
+    $(div).append(createLabel("subject", "Subject:")).append(createInputField("subject", "text", "subject", "required", "Subject...")).append("<br>");
 
-    $('<label/>', {
-        "for": "subject",
-        "text": "Subject:"
-    }).appendTo(div);
-    $('<input/>', {
-        "id": "subject",
-        "type": "text",
-        "name": "subject",
-        "required": "required",
-        "placeholder": "Subject..."
-    }).appendTo(div);
+    $(div).append(createLabel("content", "Content:")).append(createInputField("content", "text", "content", "required", "Content...")).append("<br>");
 
-    $(div).append("<br>");
+    $(div).append(createLabel(null, "Start date:")).append(createInputField("startdate", "datetime-local", null, "required")).append("<br>");
 
-    $('<label/>', {
-        "for": "content",
-        "text": "Content:"
-    }).appendTo(div);
-    $('<input/>', {
-        "id": "content",
-        "type": "text",
-        "name": "content",
-        "required": "required",
-        "placeholder": "Content..."
-    }).appendTo(div);
+    $(div).append(createLabel(null, "End date:")).append(createInputField("enddate", "datetime-local", null, "required")).append("<br>");
 
-    $(div).append("<br>");
-
-    $('<label/>', { "text": "Start date:" }).appendTo(div);
-    $('<input/>', {
-        "id": "startdate",
-        "type": "datetime-local",
-        "required": "required"
-    }).appendTo(div);
-
-    $(div).append("<br>");
-
-    $('<label/>', { "text": "End date:" }).appendTo(div);
-    $('<input/>', {
-        "id": "enddate",
-        "type": "datetime-local",
-        "required": "required"
-    }).appendTo(div);
-
-    $(div).append("<br>");
-
-    $('<button/>', {
+    const submitBtn = $('<button/>', {
         "text": "Submit",
         "type": "submit",
         "class": "btn btn-outline-primary",
-        click: function() {
+        click: function () {
             const subject = document.getElementById("subject").value;
-            if (subject.trim() === '') {
+            if (!subject) {
                 alert("Subject must be filled");
                 return;
-            } 
+            }
             const content = document.getElementById("content").value;
-            if (content.trim() === '') {
+            if (!content) {
                 alert("Content must be filled");
                 return;
-            } 
-            const startDate = document.getElementById("subject").value;
-            const endDate = document.getElementById("subject").value;
+            }
+            const startDate = document.getElementById("startdate").value + ":00Z";
+            const endDate = document.getElementById("enddate").value + ":00Z";
             createEvent(subject, content, startDate, endDate);
         }
-    }).appendTo(div);
-
-    // const test = $("<p id='par'>Hello</p>");
-    // $(div).append(test);
+    });
+    $(div).append(submitBtn).append("<br>");
 
     mainContainer.innerHTML = '';
-    mainContainer.appendChild(div);
-    //$(div).append('<span class='f-click'>Hello</span>');
-    // $(mainContainer).find('.f-click').on('click', function(){ alert('HELLO');})
+    mainContainer.appendChild(mainDiv);
 }
 
-function createInputField() {
+function checkFormData() {
 
+}
+
+function createInputField(id, type, name, required, placeholder) {
+    return $('<input/>', {
+        "id": id,
+        "type": type,
+        "name": name,
+        "required": required,
+        "placeholder": placeholder
+    });
+}
+
+function createLabel(forItem, text) {
+    return $('<label/>', {
+        "for": forItem,
+        "text": text
+    });
 }
 
 function showError(error) {
