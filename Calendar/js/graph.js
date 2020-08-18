@@ -27,17 +27,22 @@ async function getEvents() {
     }
 }
 
-async function createEvent() {
-    try {
-        let events = await graphClient
-            .api('/me/events')
-            .version('beta')
-            .post();
-        updatePage(msalClient.getAccount(), Views.home);
-    } catch (error) {
-        updatePage(msalClient.getAccount(), Views.error, {
-            message: 'Error getting events',
-            debug: error
-        });
-    }
+async function createEvent(subject, content, startTime, endTime) {
+    const event = {
+        subject: subject,
+        body: {
+            contentType: "HTML",
+            content: content
+        },
+        start: {
+            dateTime: "2020-08-15T12:00:00Z",
+            timeZone: "Pacific Standard Time"
+        },
+        end: {
+            dateTime: "2020-08-25T14:00:00Z",
+            timeZone: "Pacific Standard Time"
+        }
+    };
+
+    await graphClient.api('/me/events').post(event);
 }

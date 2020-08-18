@@ -21,24 +21,21 @@ function showAuthenticatedNav(account, view) {
     authenticatedNav.innerHTML = '';
 
     if (account) {
-        // for (const view of views) {
-
-        // }
-        // Add Calendar link
-        let calendarNav = createElement('div', 'nav-item');
-
-        let calendarLink = createElement('button',
-            `btn btn-link nav-link${view === Views.calendar ? ' active' : ''}`,
-            'Calendar');
-        calendarLink.setAttribute('onclick', 'getEvents();');
-        calendarNav.appendChild(calendarLink);
-
-        authenticatedNav.appendChild(calendarNav);
+        createNavElement('Calendar', 'getEvents();');
+        createNavElement('Create event', 'updatePage(msalClient.getAccount(), Views.createEvent);');
     }
 }
 
-function createAuthenticatedNav (view) {
+function createNavElement(label, method) {
+    let nav = createElement('div', 'nav-item');
 
+    let link = createElement('button',
+        `btn btn-link nav-link`,
+        label);
+    link.setAttribute('onclick', method);
+    nav.appendChild(link);
+
+    authenticatedNav.appendChild(nav);
 }
 
 function showAccountNav(account) {
@@ -168,12 +165,95 @@ function showCalendar(events) {
 }
 
 function showCreateEventFields() {
-    let div = document.createElement('div');
-
+    let div = createElement('div', 'form-container');
     div.appendChild(createElement('h1', null, 'Create event'));
+    // $(function() {
+    //     $(div).append("<iframe src='form_block/form.html'></iframe>");
+    // });
+
+    //Not WORK!
+    // $(function() {
+    //     $(div).load("form_block/form.html");
+    // });
+
+    $('<label/>', {
+        "for": "subject",
+        "text": "Subject:"
+    }).appendTo(div);
+    $('<input/>', {
+        "id": "subject",
+        "type": "text",
+        "name": "subject",
+        "required": "required",
+        "placeholder": "Subject..."
+    }).appendTo(div);
+
+    $(div).append("<br>");
+
+    $('<label/>', {
+        "for": "content",
+        "text": "Content:"
+    }).appendTo(div);
+    $('<input/>', {
+        "id": "content",
+        "type": "text",
+        "name": "content",
+        "required": "required",
+        "placeholder": "Content..."
+    }).appendTo(div);
+
+    $(div).append("<br>");
+
+    $('<label/>', { "text": "Start date:" }).appendTo(div);
+    $('<input/>', {
+        "id": "startdate",
+        "type": "datetime-local",
+        "required": "required"
+    }).appendTo(div);
+
+    $(div).append("<br>");
+
+    $('<label/>', { "text": "End date:" }).appendTo(div);
+    $('<input/>', {
+        "id": "enddate",
+        "type": "datetime-local",
+        "required": "required"
+    }).appendTo(div);
+
+    $(div).append("<br>");
+
+    $('<button/>', {
+        "text": "Submit",
+        "type": "submit",
+        "class": "btn btn-outline-primary",
+        click: function() {
+            const subject = document.getElementById("subject").value;
+            if (subject.trim() === '') {
+                alert("Subject must be filled");
+                return;
+            } 
+            const content = document.getElementById("content").value;
+            if (content.trim() === '') {
+                alert("Content must be filled");
+                return;
+            } 
+            const startDate = document.getElementById("subject").value;
+            const endDate = document.getElementById("subject").value;
+            createEvent(subject, content, startDate, endDate);
+        }
+    }).appendTo(div);
+
+    // const test = $("<p id='par'>Hello</p>");
+    // $(div).append(test);
 
     mainContainer.innerHTML = '';
     mainContainer.appendChild(div);
+    //$(div).append('<span class='f-click'>Hello</span>');
+    // $(mainContainer).find('.f-click').on('click', function(){ alert('HELLO');})
+}
+
+function createInputField() {
+
 }
 
 function showError(error) {
